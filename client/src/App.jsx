@@ -33,7 +33,7 @@ const App = () => {
           <Route index element={<DashBoard />} />
           <Route path="add-shows" element={<AddShows />} />
           <Route path="list-shows" element={<ListShows />} />
-          <Route path="add-bookings" element={<ListBookings />} />
+          <Route path="list-bookings" element={<ListBookings />} />
         </Route>
       </Routes>
       {!isAdminRoute && <Footer />}

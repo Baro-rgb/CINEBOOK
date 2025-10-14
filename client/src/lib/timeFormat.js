@@ -1,4 +1,3 @@
-
 const timeFormat = (minutes)=>{
     const hours= Math.floor(minutes/60);
     const minutesRemaider = minutes % 60;
