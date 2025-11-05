@@ -19,33 +19,37 @@ export const getUserBookings = async (req, res) => {
 
 // api controller function to update favorite movie in clerk user metadata
 export const updateFavorite = async (req, res) => {
-    try {
-        const {movieId} = req.body;
+  try {
+    const { movieId } = req.body;
+    const { userId } = req.auth;
 
-        const userId = req.auth().userId;
+    const user = await clerkClient.users.getUser(userId);
+    const favorites = user.privateMetadata.favorites || [];
 
-        const user = await clerkClient.users.getUser(userId);
-
-        if (!user.privateMetadata.favorites) {
-
-            user.privateMetadata.favorites = [];
-            
-        }
-        if (user.privateMetadata.favorites.includes(movieId)) {
-            user.privateMetadata.favorites.push(movieId);
-        }else {
-            user.privateMetadata.favorites = user.privateMetadata.favorites.filter( item => item !== movieId);
-        }
-
-        await clerkClient.users.updateUserMetadata(userId, {privateMetadata:user.privateMetadata});
-
-        res.json({success:true, message:'Favorite movie updated'});
-
-    } catch (error) {
-        console.log(error);
-        res.json({success:false, message:error.message});
+    // Nếu đã có movieId thì xóa, nếu chưa thì thêm vào
+    let updatedFavorites;
+    if (favorites.includes(movieId)) {
+      updatedFavorites = favorites.filter(item => item !== movieId);
+    } else {
+      updatedFavorites = [...favorites, movieId];
     }
-}
+
+    await clerkClient.users.updateUserMetadata(userId, {
+      privateMetadata: { favorites: updatedFavorites },
+    });
+
+    res.json({
+      success: true,
+      message: favorites.includes(movieId)
+        ? "Removed from favorites"
+        : "Added to favorites",
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
 
 export const getFavorites = async (req, res) => {
     try {
