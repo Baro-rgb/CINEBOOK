@@ -10,6 +10,7 @@ export const Appcontext = createContext();
 export const AppProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [shows, setShows] = useState([]);
+  const [theaters, setTheaters] = useState([]);
   const [favoriteMovies, setFavoriteMovies] = useState([]);
 
   const image_base_url = import.meta.env.VITE_TMDB_IMAGE_BASE_URL;
@@ -48,6 +49,20 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const fetchTheaters = async () => {
+    try {
+      const { data } = await axios.get("/api/theater/all");
+      if (data.success) {
+        setTheaters(data.theaters);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch theaters");
+    }
+  };
+
   const fetchfavoriteMovies = async () => {
     try {
       const { data } = await axios.get("/api/user/favorites", {
@@ -66,6 +81,7 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     fetchShows();
+    fetchTheaters();
   }, []);
 
   useEffect(() => {
@@ -83,6 +99,8 @@ export const AppProvider = ({ children }) => {
     navigate,
     isAdmin,
     shows,
+    theaters,
+    fetchTheaters,
     favoriteMovies,
     fetchfavoriteMovies,
     image_base_url,
