@@ -37,7 +37,7 @@ const MovieCard = ({ movie }) => {
           }}
           className=" px-4 py-2 text-xs bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer"
         >
-          Buy Tickets
+          Đặt vé
         </button>
 
         <p className=" flex items-center gap-1 text-sm text-gray-400 mt-1 pr-1">
