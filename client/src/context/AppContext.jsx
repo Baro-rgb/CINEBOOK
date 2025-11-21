@@ -11,6 +11,7 @@ export const AppProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [shows, setShows] = useState([]);
   const [favoriteMovies, setFavoriteMovies] = useState([]);
+  const [upcomingMovies, setUpcomingMovies] = useState([]);
 
   const image_base_url = import.meta.env.VITE_TMDB_IMAGE_BASE_URL;
 
@@ -63,9 +64,24 @@ export const AppProvider = ({ children }) => {
       console.error(error);
     }
   };
+  //
+  const fetchUpcomingMovies = async () => {
+    try {
+      const { data } = await axios.get("/api/show/upcoming");
+      if (data.success) {
+        setUpcomingMovies(data.movies);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load upcoming movies");
+    }
+  };
 
   useEffect(() => {
     fetchShows();
+    fetchUpcomingMovies();
   }, []);
 
   useEffect(() => {
@@ -86,6 +102,8 @@ export const AppProvider = ({ children }) => {
     favoriteMovies,
     fetchfavoriteMovies,
     image_base_url,
+    upcomingMovies,
+    fetchUpcomingMovies,
   };
 
   return <Appcontext.Provider value={value}>{children}</Appcontext.Provider>;

@@ -130,3 +130,25 @@ export const getShow = async (req, res) => {
         res.json({success:false, message:error.message})
     }
 }
+//// API to get upcoming movies from TMDB API
+export const getUpcomingMovies = async (req, res) => {
+    try {
+        // Thêm tham số language=vi-VN và region=VN để lấy lịch chiếu và tiếng Việt chính xác
+        const { data } = await axios.get('https://api.themoviedb.org/3/movie/upcoming', {
+            headers: {
+                Authorization: `Bearer ${process.env.TMDB_API_KEY}`
+            },
+            params: {
+                language: 'vi-VN', // Lấy thông tin tiếng Việt
+                page: 1,           // Lấy trang 1 (bạn có thể nhận từ req.query nếu muốn phân trang)
+                region: 'VN'       // Lọc các phim sắp chiếu tại Việt Nam
+            }
+        });
+
+        const movies = data.results;
+        res.json({ success: true, movies: movies });
+    } catch (error) {
+        console.error(error);
+        res.json({ success: false, message: error.message });
+    }
+}
