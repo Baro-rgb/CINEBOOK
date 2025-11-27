@@ -38,7 +38,7 @@ const MyBookings = () => {
       <div>
         <BlurCircle bottom="0px" left="600px" />
       </div>
-      <h1 className=" text-lg font-semibold mb-4"> My Bookings</h1>
+      <h1 className=" text-lg font-semibold mb-4">Đặt chỗ của tôi</h1>
 
       {bookings.map((item, index) => (
         <div
@@ -63,25 +63,25 @@ const MyBookings = () => {
           <div className="flex flex-col md:items-end md:text-right justify-between p-4">
             <div className="flex items-center gap-4">
               <p className="text-2xl font-semibold mb-3">
-                {currency}
                 {item.amount}
+                {currency}               
               </p>
               {!item.isPaid && (
                 <Link
                   to={item.paymentLink}
                   className="bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer"
                 >
-                  Pay Now
+                  Thanh toán
                 </Link>
               )}
             </div>
             <div className="text-sm">
               <p>
-                <span className="text-gray-400">Total Tickets: </span>{" "}
+                <span className="text-gray-400">Tổng số vé: </span>{" "}
                 {item.bookedSeats.length}
               </p>
               <p>
-                <span className="text-gray-400">Seat Number: </span>{" "}
+                <span className="text-gray-400">Số ghế: </span>{" "}
                 {item.bookedSeats.join(", ")}
               </p>
             </div>

@@ -24,15 +24,13 @@ const HeroSection = () => {
         </div>
       </div>
       <p className="max-w-md text-gray-300">
-        In a post-apocalyptic world where cities ride on wheels and consume each
-        other to survive, two people meet in London and try to stop a
-        conspiracy.
+        Peter Quill, một thám hiểm gia không gian, trở thành mục tiêu săn đuổi sau khi đánh cắp một quả cầu bí ẩn. Để trốn thoát và giải cứu vũ trụ, anh buộc phải liên kết với một nhóm tội phạm lập dị gồm: Rocket, Groot, Gamora và Drax. Họ phải cùng nhau chiến đấu để bảo vệ dải ngân hà khỏi mối đe dọa hủy diệt.
       </p>
       <button
         onClick={() => navigate("/movies")}
         className="flex items-center gap-1 px-6 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer"
       >
-        Explore Movies
+        Khám phá phim
         <ArrowRight className="w-5 h-5" />
       </button>
     </div>

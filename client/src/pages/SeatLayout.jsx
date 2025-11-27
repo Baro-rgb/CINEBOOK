@@ -158,7 +158,7 @@ const SeatLayout = () => {
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${selectedTime ? 'bg-primary text-white' : 'bg-zinc-800 text-zinc-400'}`}>
               1
             </div>
-            <p className="text-lg font-semibold">Select Time</p>
+            <p className="text-lg font-semibold">Chọn thời gian</p>
           </div>
           
           <div className="space-y-2">
@@ -191,7 +191,7 @@ const SeatLayout = () => {
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${selectedTheater ? 'bg-primary text-white' : 'bg-zinc-800 text-zinc-400'}`}>
                 2
               </div>
-              <p className="text-lg font-semibold">Select Theater</p>
+              <p className="text-lg font-semibold">Chọn Rạp chiếu</p>
             </div>
             
             <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
@@ -236,7 +236,7 @@ const SeatLayout = () => {
                   {selectedTheater?._id === theater._id && (
                     <div className="mt-3 flex items-center gap-2 text-primary text-sm font-medium">
                       <CheckCircle2 className="w-4 h-4" />
-                      <span>Selected</span>
+                      <span>Đã chọn</span>
                     </div>
                   )}
                 </div>
@@ -250,20 +250,20 @@ const SeatLayout = () => {
           <div className="bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/30 rounded-xl p-6 shadow-xl">
             <h3 className="font-semibold mb-3 flex items-center gap-2">
               <Film className="w-5 h-5 text-primary" />
-              Booking Summary
+              Vé của bạn
             </h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-zinc-400">Selected Seats:</span>
+                <span className="text-zinc-400">Số lượng vé:</span>
                 <span className="font-semibold">{selectedSeats.length}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-400">Seats:</span>
+                <span className="text-zinc-400">Số ghế:</span>
                 <span className="font-medium text-primary">{selectedSeats.join(", ")}</span>
               </div>
               {selectedTheater && (
                 <div className="pt-2 border-t border-zinc-700">
-                  <p className="text-zinc-400 text-xs mb-1">Theater:</p>
+                  <p className="text-zinc-400 text-xs mb-1">Rạp chiếu:</p>
                   <p className="font-medium text-sm">{selectedTheater.name}</p>
                 </div>
               )}
@@ -280,34 +280,34 @@ const SeatLayout = () => {
         
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
-            Select Your Seats
+            Chọn chỗ ngồi cho bạn
           </h1>
           <p className="text-zinc-400 text-sm">
-            {!selectedTime && "👈 Start by selecting a showtime"}
-            {selectedTime && !selectedTheater && "👈 Now select your preferred theater"}
-            {selectedTime && selectedTheater && "Choose up to 5 seats"}
+            {!selectedTime && "👈 Bắt đầu bằng cách chọn thời gian chiếu"}
+            {selectedTime && !selectedTheater && "👈 Bây giờ hãy chọn rạp chiếu phim bạn thích"}
+            {selectedTime && selectedTheater && "Chọn tối đa 5 chỗ ngồi"}
           </p>
         </div>
 
         {/* Screen */}
         <div className="mb-8">
           <img src={assets.screenImage} alt="screen" className="w-full max-w-2xl" />
-          <p className="text-zinc-500 text-sm text-center mt-2 tracking-widest">SCREEN</p>
+          <p className="text-zinc-500 text-sm text-center mt-2 tracking-widest">Màn hình</p>
         </div>
 
         {/* Seat Legend */}
         <div className="flex items-center gap-6 mb-8 text-sm flex-wrap justify-center">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 border border-primary/60 rounded"></div>
-            <span className="text-zinc-400">Available</span>
+            <span className="text-zinc-400">Chỗ trống</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-primary rounded"></div>
-            <span className="text-zinc-400">Selected</span>
+            <span className="text-zinc-400">Đã chọn</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-zinc-800 border border-zinc-700 rounded"></div>
-            <span className="text-zinc-400">Occupied</span>
+            <span className="text-zinc-400">Đã đặt trước</span>
           </div>
         </div>
 
@@ -330,7 +330,7 @@ const SeatLayout = () => {
           disabled={!selectedTime || !selectedTheater || selectedSeats.length === 0}
           className="flex items-center gap-2 mt-16 px-10 py-4 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-semibold cursor-pointer active:scale-95 shadow-lg shadow-primary/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-primary"
         >
-          Proceed to Checkout
+          Tiến hành thanh toán
           <ArrowRight strokeWidth={3} className="w-4 h-4" />
         </button>
       </div>
