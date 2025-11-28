@@ -79,6 +79,63 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  // ⭐ ADD TO FAVORITES
+  const addToFavorites = async (movieId) => {
+    try {
+      if (!user) {
+        toast.error("Vui lòng đăng nhập để thêm phim yêu thích");
+        return false;
+      }
+
+      const { data } = await axios.post(
+        "/api/user/favorites/add",
+        { movieId },
+        { headers: { Authorization: `Bearer ${await getToken()}` } }
+      );
+
+      if (data.success) {
+        // Update local state
+        await fetchfavoriteMovies();
+        return true;
+      } else {
+        toast.error(data.message);
+        return false;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Không thể thêm vào yêu thích");
+      return false;
+    }
+  };
+
+  // ⭐ REMOVE FROM FAVORITES
+  const removeFavorite = async (movieId) => {
+    try {
+      const { data } = await axios.delete(`/api/user/favorites/${movieId}`, {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+
+      if (data.success) {
+        // Update local state
+        setFavoriteMovies((prev) => prev.filter((m) => m._id !== movieId));
+        toast.success("Đã xóa khỏi yêu thích");
+        return true;
+      } else {
+        toast.error(data.message);
+        return false;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Không thể xóa khỏi yêu thích");
+      return false;
+    }
+  };
+
+  // ⭐ CHECK IF MOVIE IS FAVORITED
+  const isFavorite = (movieId) => {
+    return favoriteMovies.some((movie) => movie._id === movieId);
+  };
+
   useEffect(() => {
     fetchShows();
     fetchTheaters();
@@ -103,6 +160,9 @@ export const AppProvider = ({ children }) => {
     fetchTheaters,
     favoriteMovies,
     fetchfavoriteMovies,
+    addToFavorites, // ⭐ NEW
+    removeFavorite, // ⭐ NEW
+    isFavorite, // ⭐ NEW
     image_base_url,
   };
 

@@ -3,45 +3,11 @@ import { motion, useMotionValue, useTransform, AnimatePresence } from "framer-mo
 import { Heart, X, Bell, RefreshCcw, Calendar, Film, Star } from "lucide-react";
 import toast from "react-hot-toast";
 import BlurCircle from "../components/BlurCircle";
-
-// --- DỮ LIỆU GIẢ LẬP ---
-const db = [
-  {
-    id: 1,
-    name: 'Dune: Part Two',
-    genre: 'Sci-fi / Adventure',
-    date: 'Tháng 12/2025',
-    rating: 8.5,
-    url: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=1000&auto=format&fit=crop'
-  },
-  {
-    id: 2,
-    name: 'Kung Fu Panda 4',
-    genre: 'Animation / Comedy',
-    date: 'Tết Nguyên Đán',
-    rating: 7.8,
-    url: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=1000&auto=format&fit=crop'
-  },
-  {
-    id: 3,
-    name: 'Godzilla x Kong',
-    genre: 'Action / Monster',
-    date: 'Sắp công bố',
-    rating: 8.2,
-    url: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1000&auto=format&fit=crop'
-  },
-  {
-    id: 4,
-    name: 'Deadpool 3',
-    genre: 'Action / Marvel',
-    date: 'Mùa hè 2026',
-    rating: 9.0,
-    url: 'https://images.unsplash.com/photo-1608889175123-8ee362201f81?q=80&w=1000&auto=format&fit=crop'
-  },
-];
+import { useAppContext } from "../context/AppContext";
 
 // --- COMPONENT THẺ BÀI ---
 const Card = ({ data, onSwipe, isTop }) => {
+  const { image_base_url } = useAppContext();
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-25, 25]);
   const opacity = useTransform(x, [-200, -100, 0, 100, 200], [0, 1, 1, 1, 0]);
@@ -62,6 +28,17 @@ const Card = ({ data, onSwipe, isTop }) => {
       onSwipe("left");
     }
   };
+
+  // Get image URL
+  const imageUrl = data.backdrop_path 
+    ? `${image_base_url}${data.backdrop_path}`
+    : `${image_base_url}${data.poster_path}`;
+
+  // Format genre
+  const genreText = data.genres?.slice(0, 2).map(g => g.name).join(" | ") || "Đang cập nhật";
+
+  // Format release date
+  const releaseYear = data.release_date ? new Date(data.release_date).getFullYear() : "Sắp công bố";
 
   return (
     <motion.div
@@ -95,7 +72,7 @@ const Card = ({ data, onSwipe, isTop }) => {
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${data.url})` }}
+          style={{ backgroundImage: `url(${imageUrl})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20"></div>
         </div>
@@ -119,31 +96,31 @@ const Card = ({ data, onSwipe, isTop }) => {
           {/* Badge */}
           <div className="flex items-center gap-2 mb-4">
             <span className="bg-primary px-4 py-1.5 rounded-full text-sm font-bold">
-              Sắp chiếu
+              Đang chiếu
             </span>
-            {data.rating && (
+            {data.vote_average && (
               <div className="flex items-center gap-1 bg-amber-500/90 px-3 py-1.5 rounded-full">
                 <Star className="w-4 h-4 fill-white text-white" />
-                <span className="text-sm font-bold">{data.rating}</span>
+                <span className="text-sm font-bold">{data.vote_average.toFixed(1)}</span>
               </div>
             )}
           </div>
 
           {/* Title */}
           <h3 className="text-4xl font-bold mb-3 drop-shadow-2xl leading-tight">
-            {data.name}
+            {data.title}
           </h3>
           
           {/* Genre */}
           <div className="flex items-center gap-2 mb-3 text-zinc-300">
             <Film className="w-4 h-4 text-primary" />
-            <p className="text-lg">{data.genre}</p>
+            <p className="text-lg">{genreText}</p>
           </div>
 
           {/* Release Date */}
           <div className="flex items-center gap-2 text-primary font-semibold">
             <Calendar className="w-5 h-5" />
-            <span className="text-base">Dự kiến: {data.date}</span>
+            <span className="text-base">Năm phát hành: {releaseYear}</span>
           </div>
         </div>
       </div>
@@ -153,18 +130,37 @@ const Card = ({ data, onSwipe, isTop }) => {
 
 // --- COMPONENT CHÍNH ---
 const Releases = () => {
-  const [cards, setCards] = useState(db);
+  const { shows, addToFavorites, user } = useAppContext();
+  const [cards, setCards] = useState(shows);
   const [direction, setDirection] = useState(null);
 
-  const handleSwipe = (dir, id, name) => {
+  // Update cards when shows change
+  React.useEffect(() => {
+    setCards(shows);
+  }, [shows]);
+
+  const handleSwipe = async (dir, movie) => {
     setDirection(dir);
-    setCards((prev) => prev.filter((card) => card.id !== id));
+    
+    // Remove card from stack
+    setCards((prev) => prev.filter((card) => card._id !== movie._id));
 
     if (dir === "right") {
-      toast.success(`Đã thêm "${name}" vào danh sách yêu thích!`, {
-        icon: "❤️",
-        duration: 2000,
-      });
+      // Add to favorites
+      if (!user) {
+        toast.error("Vui lòng đăng nhập để thêm vào yêu thích", {
+          duration: 3000,
+        });
+        return;
+      }
+
+      const success = await addToFavorites(movie._id);
+      if (success) {
+        toast.success(`Đã thêm "${movie.title}" vào danh sách yêu thích!`, {
+          icon: "❤️",
+          duration: 2000,
+        });
+      }
     } else {
       toast("Đã bỏ qua phim này", { 
         icon: "👋",
@@ -176,13 +172,31 @@ const Releases = () => {
   const manualSwipe = (dir) => {
     if (cards.length === 0) return;
     const topCard = cards[cards.length - 1];
-    handleSwipe(dir, topCard.id, topCard.name);
+    handleSwipe(dir, topCard);
   };
 
   const resetCards = () => {
-    setCards(db);
+    setCards(shows);
     setDirection(null);
   };
+
+  // Empty state when no shows available
+  if (shows.length === 0) {
+    return (
+      <div className="relative min-h-screen flex flex-col items-center justify-center px-4 py-20">
+        <BlurCircle top="10%" left="5%" color="rgba(248, 69, 101, 0.15)" />
+        <BlurCircle bottom="10%" right="5%" color="rgba(248, 69, 101, 0.1)" />
+        
+        <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mb-6">
+          <Film className="w-12 h-12 text-primary" />
+        </div>
+        <h3 className="text-3xl font-bold mb-3">Chưa có phim nào!</h3>
+        <p className="text-zinc-400 text-center mb-8 max-w-sm">
+          Hiện tại chưa có phim đang chiếu. Vui lòng quay lại sau.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center px-4 py-20 overflow-hidden">
@@ -198,10 +212,10 @@ const Releases = () => {
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
-            Phim Sắp Chiếu
+            Phim Đang Chiếu
           </h1>
           <p className="text-zinc-400 text-lg mb-6">
-            Khám phá những bộ phim hot sắp ra mắt
+            Vuốt để chọn phim yêu thích của bạn
           </p>
           
           {/* Instruction */}
@@ -215,7 +229,7 @@ const Releases = () => {
             <div className="flex items-center gap-2 bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-800">
               <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-sm text-zinc-300">
-                Vuốt <span className="text-green-500 font-bold">phải</span> để thích
+                Vuốt <span className="text-green-500 font-bold">phải</span> để yêu thích
               </span>
             </div>
           </div>
@@ -227,10 +241,10 @@ const Releases = () => {
         <AnimatePresence mode="popLayout">
           {cards.map((card, index) => (
             <Card 
-              key={card.id} 
+              key={card._id} 
               data={card}
               isTop={index === cards.length - 1}
-              onSwipe={(dir) => handleSwipe(dir, card.id, card.name)} 
+              onSwipe={(dir) => handleSwipe(dir, card)} 
             />
           ))}
         </AnimatePresence>
@@ -247,7 +261,7 @@ const Releases = () => {
             </div>
             <h3 className="text-3xl font-bold mb-3">Hết phim rồi! 🎬</h3>
             <p className="text-zinc-400 text-center mb-8 max-w-sm">
-              Bạn đã xem hết tất cả phim sắp chiếu. Hãy quay lại sau để khám phá thêm!
+              Bạn đã xem hết tất cả phim đang chiếu. Hãy quay lại để xem lại!
             </p>
             <button
               onClick={resetCards}
@@ -299,7 +313,7 @@ const Releases = () => {
         transition={{ delay: 1 }}
         className="text-zinc-600 text-sm mt-12 text-center max-w-md relative z-20"
       >
-        💡 Mẹo: Bạn có thể vuốt nhanh hoặc kéo nhẹ để chọn phim yêu thích
+        💡 Mẹo: Vuốt nhanh hoặc bấm nút để chọn phim yêu thích
       </motion.p>
     </div>
   );

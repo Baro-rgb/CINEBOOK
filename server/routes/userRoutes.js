@@ -1,10 +1,21 @@
 import express from 'express';
-import { getFavorites, getUserBookings, updateFavorite } from '../controllers/userController.js';
+import { 
+    getFavorites, 
+    getUserBookings, 
+    updateFavorite,
+    addToFavorites,      // ⭐ NEW
+    removeFavorite       // ⭐ NEW
+} from '../controllers/userController.js';
 
 const userRouter = express.Router();
 
-userRouter.get('/bookings', getUserBookings)
-userRouter.post('/update-favorite', updateFavorite)
-userRouter.get('/favorites', getFavorites)
+// Bookings
+userRouter.get('/bookings', getUserBookings);
+
+// Favorites
+userRouter.get('/favorites', getFavorites);
+userRouter.post('/favorites/add', addToFavorites);           // ⭐ NEW - Add to favorites
+userRouter.delete('/favorites/:movieId', removeFavorite);    // ⭐ NEW - Remove from favorites
+userRouter.post('/update-favorite', updateFavorite);         // OLD - Toggle (keep for compatibility)
 
 export default userRouter;

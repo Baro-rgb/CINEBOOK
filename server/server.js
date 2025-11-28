@@ -17,23 +17,22 @@ const port = 3000;
 
 await connectDB()
 
-//stripe webhook route
-app.use('/api/stripe',express.raw({
+//stripe webhook route (MUST be before express.json())
+app.use('/api/stripe', express.raw({
     type:'application/json'
-}),
-stripeWebhooks)
+}), stripeWebhooks)
 
-// Middleware
-app.use(express.json());
-app.use(cors());
-app.use(clerkMiddleware())
+// Middleware - ORDER MATTERS! ⭐
+app.use(cors());                 // 1. CORS first
+app.use(express.json());         // 2. JSON parser
+app.use(clerkMiddleware());      // 3. Clerk auth last ⭐
 
 // API Routes
 app.get('/', (req, res)=> res.send('Server is Live!'))
-app.use('/api/inngest',serve({ client: inngest, functions }))
-app.use('/api/show',showRouter)
+app.use('/api/inngest', serve({ client: inngest, functions }))
+app.use('/api/show', showRouter)
 app.use('/api/booking', bookingRouter)
-app.use('/api/admin',adminRouter)
+app.use('/api/admin', adminRouter)
 app.use('/api/user', userRouter)
 app.use('/api/theater', theaterRouter)
 
