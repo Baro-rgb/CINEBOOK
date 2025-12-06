@@ -54,3 +54,44 @@ export const getAllBookings = async (req, res) => {
         res.json({success:false, message:error.message});
     }
 }
+
+// API to delete a booking
+export const deleteBooking = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Tìm booking cần xóa
+        const booking = await Booking.findById(id);
+        if (!booking) {
+            return res.json({success: false, message: "Booking not found"});
+        }
+
+        console.log("📌 Booking to delete:", booking);
+        console.log("📌 Booked seats:", booking.bookedSeats);
+
+        // Lấy show và xóa ghế khỏi occupiedSeats
+        const show = await Show.findById(booking.show);
+        if (show) {
+            console.log("📌 BEFORE delete - occupiedSeats:", show.occupiedSeats);
+            
+            // Xóa từng ghế khỏi occupiedSeats object
+            booking.bookedSeats.forEach(seat => {
+                delete show.occupiedSeats[seat];
+            });
+            
+            // ⭐ QUAN TRỌNG: Phải mark modified vì occupiedSeats là nested object
+            show.markModified('occupiedSeats');
+            await show.save();
+            
+            console.log("📌 AFTER delete - occupiedSeats:", show.occupiedSeats);
+        }
+
+        // Xóa booking khỏi database
+        await Booking.findByIdAndDelete(id);
+        
+        res.json({success: true, message: "Booking deleted successfully"});
+    } catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
+}
