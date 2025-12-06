@@ -126,7 +126,7 @@ const HeroSection = () => {
         {/* Buttons */}
         <div className="flex gap-4 mt-2">
           <button
-            onClick={() => navigate(`/movie/${currentMovie._id}`)}
+            onClick={() => navigate(`/movies/${currentMovie._id}`)}
             className="flex items-center gap-2 px-6 py-3 text-sm md:text-base bg-primary hover:bg-primary/90 transition rounded-full font-medium cursor-pointer"
           >
             Đặt vé ngay

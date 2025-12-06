@@ -88,7 +88,7 @@ const Movies = () => {
       </div>
 
       {/* Filters Section */}
-      <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-white/10">
+      <div className="bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-zinc-800">
         <div className="flex items-center gap-2 mb-4">
           <Filter className="w-5 h-5 text-primary" />
           <h2 className="text-lg font-semibold">Bộ lọc & Tìm kiếm</h2>
@@ -103,7 +103,7 @@ const Movies = () => {
               placeholder="Tìm kiếm phim..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary transition"
+              className="w-full pl-10 pr-4 py-3 bg-zinc-800 text-white border border-zinc-700 rounded-lg focus:outline-none focus:border-primary transition"
             />
           </div>
 
@@ -112,11 +112,12 @@ const Movies = () => {
             <select
               value={selectedGenre}
               onChange={(e) => setSelectedGenre(e.target.value)}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary transition appearance-none cursor-pointer"
+              className="w-full px-4 py-3 bg-zinc-800 text-white border border-zinc-700 rounded-lg focus:outline-none focus:border-primary transition appearance-none cursor-pointer"
+              style={{ colorScheme: 'dark' }}
             >
-              <option value="all">Tất cả thể loại</option>
+              <option value="all" className="bg-zinc-800 text-white">Tất cả thể loại</option>
               {allGenres.map((genre) => (
-                <option key={genre} value={genre}>
+                <option key={genre} value={genre} className="bg-zinc-800 text-white">
                   {genre}
                 </option>
               ))}
@@ -128,12 +129,13 @@ const Movies = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary transition appearance-none cursor-pointer"
+              className="w-full px-4 py-3 bg-zinc-800 text-white border border-zinc-700 rounded-lg focus:outline-none focus:border-primary transition appearance-none cursor-pointer"
+              style={{ colorScheme: 'dark' }}
             >
-              <option value="default">Sắp xếp mặc định</option>
-              <option value="title">Theo tên A-Z</option>
-              <option value="rating">Đánh giá cao nhất</option>
-              <option value="release_date">Mới nhất</option>
+              <option value="default" className="bg-zinc-800 text-white">Sắp xếp mặc định</option>
+              <option value="title" className="bg-zinc-800 text-white">Theo tên A-Z</option>
+              <option value="rating" className="bg-zinc-800 text-white">Đánh giá cao nhất</option>
+              <option value="release_date" className="bg-zinc-800 text-white">Mới nhất</option>
             </select>
           </div>
         </div>
@@ -142,7 +144,7 @@ const Movies = () => {
         {hasActiveFilters && (
           <button
             onClick={handleResetFilters}
-            className="mt-4 px-4 py-2 text-sm bg-white/10 hover:bg-white/20 rounded-lg transition"
+            className="mt-4 px-4 py-2 text-sm bg-zinc-800 hover:bg-zinc-700 rounded-lg transition"
           >
             Xóa bộ lọc
           </button>
@@ -158,7 +160,7 @@ const Movies = () => {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-20">
-          <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-4">
+          <div className="w-20 h-20 bg-zinc-800 rounded-full flex items-center justify-center mb-4">
             <Search className="w-10 h-10 text-gray-500" />
           </div>
           <h3 className="text-xl font-semibold mb-2">
@@ -179,7 +181,7 @@ const Movies = () => {
 
       {/* Movie Stats */}
       <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+        <div className="bg-zinc-900/50 backdrop-blur-sm rounded-lg p-4 border border-zinc-800">
           <div className="flex items-center gap-2 mb-2">
             <Calendar className="w-5 h-5 text-primary" />
             <span className="text-sm text-gray-400">Tổng phim</span>
@@ -187,7 +189,7 @@ const Movies = () => {
           <p className="text-2xl font-bold">{shows.length}</p>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+        <div className="bg-zinc-900/50 backdrop-blur-sm rounded-lg p-4 border border-zinc-800">
           <div className="flex items-center gap-2 mb-2">
             <Filter className="w-5 h-5 text-primary" />
             <span className="text-sm text-gray-400">Thể loại</span>
@@ -195,7 +197,7 @@ const Movies = () => {
           <p className="text-2xl font-bold">{allGenres.length}</p>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+        <div className="bg-zinc-900/50 backdrop-blur-sm rounded-lg p-4 border border-zinc-800">
           <div className="flex items-center gap-2 mb-2">
             <Star className="w-5 h-5 text-primary" />
             <span className="text-sm text-gray-400">Đang hiển thị</span>
@@ -203,7 +205,7 @@ const Movies = () => {
           <p className="text-2xl font-bold">{filteredAndSortedMovies.length}</p>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+        <div className="bg-zinc-900/50 backdrop-blur-sm rounded-lg p-4 border border-zinc-800">
           <div className="flex items-center gap-2 mb-2">
             <Star className="w-5 h-5 text-yellow-500" />
             <span className="text-sm text-gray-400">Đánh giá TB</span>
@@ -221,7 +223,7 @@ const Movies = () => {
     </div>
   ) : (
     <div className="flex flex-col items-center justify-center h-screen px-6">
-      <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-6">
+      <div className="w-24 h-24 bg-zinc-800 rounded-full flex items-center justify-center mb-6">
         <Calendar className="w-12 h-12 text-gray-500" />
       </div>
       <h1 className="text-3xl md:text-4xl font-bold text-center mb-4">

@@ -44,7 +44,7 @@ const Navbar = () => {
     { path: "/", label: "Trang chủ" },
     { path: "/movies", label: "Phim Đang Chiếu" },
     { path: "/theaters", label: "Rạp Phim" },
-    { path: "/releases", label: "Sắp ra mắt" },
+    { path: "/releases", label: "Tinder Phim" },
   ];
 
   const isActive = (path) => location.pathname === path;
