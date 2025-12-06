@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Menu, Search, TicketPlus, X, Heart } from "lucide-react";
+import { Menu, Search, TicketPlus, X, Heart, LayoutDashboard } from "lucide-react";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
 import { useAppContext } from "../context/AppContext";
 import { assets } from "../assets/assets";
@@ -13,6 +13,21 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { favoriteMovies } = useAppContext();
+
+  // Kiểm tra trong metadata có role là admin hay không
+  const isAdmin = user?.publicMetadata?.role === "admin";
+  
+  // Debug: Log để kiểm tra metadata
+  useEffect(() => {
+    if (user) {
+      console.log("=== USER DEBUG INFO ===");
+      console.log("User ID:", user.id);
+      console.log("User Email:", user.primaryEmailAddress?.emailAddress);
+      console.log("Public Metadata:", user.publicMetadata);
+      console.log("Is Admin:", isAdmin);
+      console.log("=====================");
+    }
+  }, [user, isAdmin]);
 
   // Detect scroll for backdrop blur effect
   useEffect(() => {
@@ -140,23 +155,44 @@ const Navbar = () => {
 
               {/* Auth Button / User Menu */}
               {!user ? (
-                <button
-                  onClick={openSignIn}
-                  className="px-4 py-2 md:px-6 md:py-2.5 bg-primary hover:bg-primary/90 active:scale-95 transition-all duration-200 rounded-full font-medium text-sm md:text-base shadow-lg shadow-primary/20 hover:shadow-primary/40"
+                <button 
+                  onClick={openSignIn} 
+                  className="px-6 py-2 bg-gradient-to-r from-primary to-pink-600 text-white rounded-full font-medium hover:shadow-lg hover:scale-105 transition-all duration-200"
                 >
                   Đăng nhập
                 </button>
               ) : (
-                <div className="transform hover:scale-105 transition-transform">
-                  <UserButton afterSignOutUrl="/">
-                    <UserButton.MenuItems>
-                      <UserButton.Action
-                        label="My Booking"
-                        labelIcon={<TicketPlus width={15} />}
-                        onClick={() => navigate("/my-bookings")}
-                      />
-                    </UserButton.MenuItems>
-                  </UserButton>
+                <div className="flex items-center gap-3">
+                  {/* Nút Admin - Hiện bên ngoài nếu là admin */}
+                  {isAdmin && (
+                    <button
+                      onClick={() => navigate("/admin")}
+                      className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white rounded-full transition-all duration-200 hover:scale-105 shadow-lg"
+                      title="Admin Dashboard"
+                    >
+                      <LayoutDashboard size={18} />
+                      <span className="text-sm font-medium">Admin</span>
+                    </button>
+                  )}
+                  
+                  <div className="transform hover:scale-105 transition-transform">
+                    <UserButton afterSignOutUrl="/">
+                      <UserButton.MenuItems>
+                        {isAdmin && (
+                          <UserButton.Action
+                            label="Admin Dashboard"
+                            labelIcon={<LayoutDashboard size={15} />}
+                            onClick={() => navigate("/admin")}
+                          />
+                        )}
+                        <UserButton.Action
+                          label="My Booking"
+                          labelIcon={<TicketPlus size={15} />}
+                          onClick={() => navigate("/my-bookings")}
+                        />
+                      </UserButton.MenuItems>
+                    </UserButton>
+                  </div>
                 </div>
               )}
 
@@ -194,6 +230,22 @@ const Navbar = () => {
             {/* Mobile Menu Links */}
             <div className="flex-1 overflow-y-auto py-6 px-4">
               <div className="space-y-2">
+                {/* Admin Link cho Mobile */}
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    onClick={handleLinkClick}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 transform hover:translate-x-2 ${
+                      isActive("/admin")
+                        ? "bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg"
+                        : "text-gray-300 hover:bg-white/10 hover:text-white bg-purple-600/20 border border-purple-500/30"
+                    }`}
+                  >
+                    <LayoutDashboard className="w-5 h-5" />
+                    <span>Admin Dashboard</span>
+                  </Link>
+                )}
+                
                 {navLinks.map((link, index) => (
                   <Link
                     key={link.path}
