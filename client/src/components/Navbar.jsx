@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Menu, Search, TicketPlus, X, Heart } from "lucide-react";
+import { Menu, Search, TicketPlus, X, Heart, Film } from "lucide-react";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
 import { useAppContext } from "../context/AppContext";
 import { assets } from "../assets/assets";
@@ -8,6 +8,11 @@ import { assets } from "../assets/assets";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  
   const { user } = useUser();
   const { openSignIn } = useClerk();
   const navigate = useNavigate();
@@ -30,7 +35,7 @@ const Navbar = () => {
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen || searchOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -38,13 +43,72 @@ const Navbar = () => {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isOpen]);
+  }, [isOpen, searchOpen]);
+
+  // Handle search functionality
+  useEffect(() => {
+    const delaySearch = setTimeout(() => {
+      if (searchQuery.trim().length > 0) {
+        performSearch(searchQuery);
+      } else {
+        setSearchResults([]);
+      }
+    }, 300); // Debounce search
+
+    return () => clearTimeout(delaySearch);
+  }, [searchQuery]);
+
+  // Close search with Escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && searchOpen) {
+        setSearchOpen(false);
+        setSearchQuery("");
+      }
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [searchOpen]);
+
+  const performSearch = async (query) => {
+    setIsSearching(true);
+    try {
+      // TODO: Thay thế bằng API endpoint thực tế của bạn
+      // const response = await fetch(`/api/movies/search?q=${encodeURIComponent(query)}`);
+      // const data = await response.json();
+      
+      // Demo data - bạn cần thay thế bằng API call thực tế
+      const demoMovies = [
+        { id: 1, title: "Avengers: Endgame", poster: "/poster1.jpg", releaseDate: "2024-01-15" },
+        { id: 2, title: "Spider-Man: No Way Home", poster: "/poster2.jpg", releaseDate: "2024-02-20" },
+        { id: 3, title: "The Batman", poster: "/poster3.jpg", releaseDate: "2024-03-10" },
+      ];
+      
+      const filtered = demoMovies.filter(movie => 
+        movie.title.toLowerCase().includes(query.toLowerCase())
+      );
+      
+      setSearchResults(filtered);
+    } catch (error) {
+      console.error("Search error:", error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleMovieClick = (movieId) => {
+    navigate(`/movies/${movieId}`);
+    setSearchOpen(false);
+    setSearchQuery("");
+    setSearchResults([]);
+  };
 
   const navLinks = [
     { path: "/", label: "Trang chủ" },
     { path: "/movies", label: "Phim Đang Chiếu" },
     { path: "/theaters", label: "Rạp Phim" },
-    { path: "/releases", label: "Sắp ra mắt" },
+    { path: "/releases", label: "Tinder Phim" },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -62,6 +126,114 @@ const Navbar = () => {
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
           onClick={() => setIsOpen(false)}
         />
+      )}
+
+      {/* Search Modal */}
+      {searchOpen && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-start justify-center pt-20 px-4"
+          onClick={() => {
+            setSearchOpen(false);
+            setSearchQuery("");
+          }}
+        >
+          <div
+            className="w-full max-w-3xl bg-gray-900 rounded-2xl shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Search Input */}
+            <div className="flex items-center gap-3 p-4 border-b border-white/10">
+              <Search className="w-6 h-6 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Tìm kiếm phim..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 bg-transparent text-white text-lg outline-none placeholder:text-gray-500"
+                autoFocus
+              />
+              <button
+                onClick={() => {
+                  setSearchOpen(false);
+                  setSearchQuery("");
+                }}
+                className="p-2 hover:bg-white/10 rounded-full transition-all duration-200"
+              >
+                <X className="w-5 h-5 text-gray-400" />
+              </button>
+            </div>
+
+            {/* Search Results */}
+            <div className="max-h-96 overflow-y-auto">
+              {isSearching ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              ) : searchQuery.trim().length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                  <Film className="w-12 h-12 mb-3 opacity-50" />
+                  <p>Nhập tên phim để tìm kiếm</p>
+                </div>
+              ) : searchResults.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                  <Film className="w-12 h-12 mb-3 opacity-50" />
+                  <p>Không tìm thấy phim nào</p>
+                </div>
+              ) : (
+                <div className="p-4 space-y-2">
+                  {searchResults.map((movie) => (
+                    <button
+                      key={movie.id}
+                      onClick={() => handleMovieClick(movie.id)}
+                      className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-white/10 transition-all duration-200 text-left group"
+                    >
+                      <div className="w-16 h-20 bg-gray-800 rounded-lg overflow-hidden flex-shrink-0">
+                        {movie.poster ? (
+                          <img
+                            src={movie.poster}
+                            alt={movie.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Film className="w-8 h-8 text-gray-600" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-white font-medium group-hover:text-primary transition-colors duration-200 truncate">
+                          {movie.title}
+                        </h3>
+                        <p className="text-sm text-gray-400 mt-1">
+                          {movie.releaseDate}
+                        </p>
+                      </div>
+                      <Search className="w-5 h-5 text-gray-600 group-hover:text-primary transition-colors duration-200" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Quick Actions */}
+            {searchQuery.trim().length === 0 && (
+              <div className="p-4 border-t border-white/10">
+                <p className="text-xs text-gray-500 mb-3">GỢI Ý TÌM KIẾM</p>
+                <div className="flex flex-wrap gap-2">
+                  {["Phim hành động", "Phim kinh dị", "Phim hoạt hình", "Phim chiếu rạp"].map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => setSearchQuery(tag)}
+                      className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-full text-sm text-gray-400 hover:text-white transition-all duration-200"
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       <nav
@@ -132,6 +304,7 @@ const Navbar = () => {
             <div className="flex items-center gap-3 md:gap-4 z-50">
               {/* Search Button */}
               <button
+                onClick={() => setSearchOpen(true)}
                 className="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 hover:scale-110 active:scale-95"
                 aria-label="Search"
               >
@@ -235,7 +408,13 @@ const Navbar = () => {
               </div>
 
               {/* Mobile Search */}
-              <button className="w-full mt-6 px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-200 text-gray-300 hover:text-white font-medium flex items-center justify-center gap-2">
+              <button 
+                onClick={() => {
+                  setIsOpen(false);
+                  setSearchOpen(true);
+                }}
+                className="w-full mt-6 px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-200 text-gray-300 hover:text-white font-medium flex items-center justify-center gap-2"
+              >
                 <Search className="w-5 h-5" />
                 Tìm kiếm
               </button>

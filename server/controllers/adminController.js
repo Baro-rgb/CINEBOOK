@@ -54,3 +54,36 @@ export const getAllBookings = async (req, res) => {
         res.json({success:false, message:error.message});
     }
 }
+
+// API to delete a booking
+export const deleteBooking = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const booking = await Booking.findById(id);
+        if (!booking) {
+            return res.json({success: false, message: "Booking not found"});
+        }
+
+        // Remove booked seats from show
+        const show = await Show.findById(booking.show);
+        if (show) {
+            // ⭐ SỬA: bookedSeats là Array, không phải Object
+            booking.bookedSeats.forEach(seat => {
+                delete show.occupiedSeats[seat];
+            });
+            
+            // ⭐ QUAN TRỌNG: Đánh dấu là modified để Mongoose save đúng
+            show.markModified('occupiedSeats');
+            await show.save();
+            
+            console.log("✅ Removed seats from show:", booking.bookedSeats);
+        }
+
+        await Booking.findByIdAndDelete(id);
+        res.json({success: true, message: "Booking deleted successfully"});
+    } catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
+}

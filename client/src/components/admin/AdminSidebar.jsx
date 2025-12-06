@@ -16,10 +16,10 @@ const AdminSidebar = () => {
   };
 
   const adminNavlinks = [
-    { name: "Dashboard", path: "/admin", icon: LayoutDashboardIcon },
-    { name: "Add Shows", path: "/admin/add-shows", icon: PlusSquareIcon },
-    { name: "List Shows", path: "/admin/list-shows", icon: ListIcon },
-    { name: "List Bookings", path: "/admin/list-bookings", icon: ListCollapseIcon,},
+    { name: "Tổng Quan", path: "/admin", icon: LayoutDashboardIcon },
+    { name: "Thêm Phim", path: "/admin/add-shows", icon: PlusSquareIcon },
+    { name: "Danh Sách Phim", path: "/admin/list-shows", icon: ListIcon },
+    { name: "Danh Sách Đặt Chỗ", path: "/admin/list-bookings", icon: ListCollapseIcon,},
   ];
 
   return (

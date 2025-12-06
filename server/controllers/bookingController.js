@@ -100,18 +100,23 @@ export const createBooking = async (req, res) => {
         res.json({success:false, message:error.message});
     }   
 }
+// API to get occupied seats for a show
 export const getOccupiedSeats = async (req, res) => {
     try {
-
-        const {showId} = req.params;
-        const showData = await Show.findById(showId);
-
-        const occupiedSeats = Object.keys(showData.occupiedSeats);
-
-        res.json({success:true, occupiedSeats});
+        const { showId } = req.params;
         
+        const show = await Show.findById(showId);
+        
+        if (!show) {
+            return res.json({ success: false, message: "Show not found" });
+        }
+        
+        // Lấy danh sách ghế đã đặt từ occupiedSeats object
+        const occupiedSeats = Object.values(show.occupiedSeats);
+        
+        res.json({ success: true, occupiedSeats });
     } catch (error) {
-        console.log(error.message);
-        res.json({success:false, message:error.message});
+        console.log(error);
+        res.json({ success: false, message: error.message });
     }
-}
+};
