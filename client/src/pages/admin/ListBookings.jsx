@@ -74,14 +74,14 @@ const ListBookings = () => {
   return !isLoading ? (
     <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto">
-        <Title text1="List" text2="Bookings" />
+        <Title text1="Danh sách" text2="Đặt chỗ" />
         
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-zinc-900 rounded-xl shadow-lg border border-primary/20 p-5 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Total Bookings</p>
+                <p className="text-sm font-medium text-gray-400">Tổng số lượt đặt chỗ</p>
                 <p className="text-2xl font-bold text-white mt-1">{totalBookings}</p>
               </div>
               <div className="bg-primary/20 p-3 rounded-lg">
@@ -93,7 +93,7 @@ const ListBookings = () => {
           <div className="bg-zinc-900 rounded-xl shadow-lg border border-primary/20 p-5 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Total Seats</p>
+                <p className="text-sm font-medium text-gray-400">Tổng chỗ ngồi</p>
                 <p className="text-2xl font-bold text-white mt-1">{totalSeats}</p>
               </div>
               <div className="bg-primary/20 p-3 rounded-lg">
@@ -105,7 +105,7 @@ const ListBookings = () => {
           <div className="bg-zinc-900 rounded-xl shadow-lg border border-primary/20 p-5 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Avg. Booking</p>
+                <p className="text-sm font-medium text-gray-400">Số lượng vé trung bình</p>
                 <p className="text-2xl font-bold text-white mt-1">{formatCurrency(avgBookingValue)}</p>
               </div>
               <div className="bg-primary/20 p-3 rounded-lg">
@@ -117,7 +117,7 @@ const ListBookings = () => {
           <div className="bg-zinc-900 rounded-xl shadow-lg border border-primary/20 p-5 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Total Revenue</p>
+                <p className="text-sm font-medium text-gray-400">Tổng doanh thu</p>
                 <p className="text-2xl font-bold text-white mt-1">{formatCurrency(totalRevenue)}</p>
               </div>
               <div className="bg-primary/20 p-3 rounded-lg">
@@ -136,35 +136,35 @@ const ListBookings = () => {
                   <th className="px-6 py-4 text-left text-sm font-semibold">
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4" />
-                      User Name
+                      Tên người dùng
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold">
                     <div className="flex items-center gap-2">
                       <Film className="w-4 h-4" />
-                      Movie Name
+                      Tên phim
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold">
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
-                      Show Time
+                      Thời gian chiếu
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold">
                     <div className="flex items-center gap-2">
                       <Armchair className="w-4 h-4" />
-                      Seats
+                      Ghế
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold">
                     <div className="flex items-center gap-2">
                       <DollarSign className="w-4 h-4" />
-                      Amount
+                      Doanh thu
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold">
-                    Action
+                    Hành động
                   </th>
                 </tr>
               </thead>

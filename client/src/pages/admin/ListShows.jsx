@@ -41,14 +41,14 @@ const ListShows = () => {
   return !loading ? (
     <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto">
-        <Title text1="List" text2="Shows" />
+        <Title text1="Danh sách" text2="Phim" />
         
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-zinc-900 rounded-xl shadow-lg border border-primary/20 p-5 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Total Shows</p>
+                <p className="text-sm font-medium text-gray-400">Tổng phim</p>
                 <p className="text-2xl font-bold text-white mt-1">{shows.length}</p>
               </div>
               <div className="bg-primary/20 p-3 rounded-lg">
@@ -60,7 +60,7 @@ const ListShows = () => {
           <div className="bg-zinc-900 rounded-xl shadow-lg border border-primary/20 p-5 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Total Bookings</p>
+                <p className="text-sm font-medium text-gray-400">Tổng đặt chỗ</p>
                 <p className="text-2xl font-bold text-white mt-1">{totalBookings}</p>
               </div>
               <div className="bg-primary/20 p-3 rounded-lg">
@@ -72,7 +72,7 @@ const ListShows = () => {
           <div className="bg-zinc-900 rounded-xl shadow-lg border border-primary/20 p-5 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Avg. Occupancy</p>
+                <p className="text-sm font-medium text-gray-400">Tỷ lệ lấp đầy trung bình</p>
                 <p className="text-2xl font-bold text-white mt-1">{averageOccupancy}</p>
               </div>
               <div className="bg-primary/20 p-3 rounded-lg">
@@ -84,7 +84,7 @@ const ListShows = () => {
           <div className="bg-zinc-900 rounded-xl shadow-lg border border-primary/20 p-5 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">Total Earnings</p>
+                <p className="text-sm font-medium text-gray-400">Tổng doanh thu</p>
                 <p className="text-2xl font-bold text-white mt-1">{formatCurrency(totalEarnings)}</p>
               </div>
               <div className="bg-primary/20 p-3 rounded-lg">
@@ -103,25 +103,25 @@ const ListShows = () => {
                   <th className="px-6 py-4 text-left text-sm font-semibold">
                     <div className="flex items-center gap-2">
                       <Film className="w-4 h-4" />
-                      Movie Name
+                      Tên phim
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold">
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
-                      Show Time
+                      Giờ chiếu
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold">
                     <div className="flex items-center gap-2">
                       <Users className="w-4 h-4" />
-                      Bookings
+                      Số chỗ
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold">
                     <div className="flex items-center gap-2">
                       <DollarSign className="w-4 h-4" />
-                      Earnings
+                      Doanh thu
                     </div>
                   </th>
                 </tr>
@@ -144,7 +144,7 @@ const ListShows = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/20 text-primary">
-                          {bookings} seats
+                          {bookings} chỗ
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -162,7 +162,7 @@ const ListShows = () => {
           {shows.length === 0 && (
             <div className="text-center py-12">
               <Film className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-              <p className="text-gray-400">No shows available</p>
+              <p className="text-gray-400">Không có chương trình nào</p>
             </div>
           )}
         </div>
