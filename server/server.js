@@ -13,27 +13,27 @@ import theaterRouter from './routes/theaterRoutes.js';
 import { stripeWebhooks } from './controllers/stripeWebhook.js';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-await connectDB()
+await connectDB();
 
-//stripe webhook route (MUST be before express.json())
-app.use('/api/stripe', express.raw({
-    type:'application/json'
-}), stripeWebhooks)
+// ⚠️ Stripe webhook MUST be before express.json
+app.use('/api/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
 
-// Middleware - ORDER MATTERS! ⭐
-app.use(cors());                 // 1. CORS first
-app.use(express.json());         // 2. JSON parser
-app.use(clerkMiddleware());      // 3. Clerk auth last ⭐
+// Middleware (order đúng)
+app.use(cors());
+app.use(express.json());
+app.use(clerkMiddleware());
 
-// API Routes
-app.get('/', (req, res)=> res.send('Server is Live!'))
-app.use('/api/inngest', serve({ client: inngest, functions }))
-app.use('/api/show', showRouter)
-app.use('/api/booking', bookingRouter)
-app.use('/api/admin', adminRouter)
-app.use('/api/user', userRouter)
-app.use('/api/theater', theaterRouter)
+// Routes
+app.get('/', (req, res) => res.send('Server is Live!'));
+app.use('/api/inngest', serve({ client: inngest, functions }));
+app.use('/api/show', showRouter);
+app.use('/api/booking', bookingRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/user', userRouter);
+app.use('/api/theater', theaterRouter);
 
-app.listen(port, ()=> console.log(`Server listening at http://localhost:${port}`));
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
